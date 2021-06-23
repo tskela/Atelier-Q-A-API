@@ -1,0 +1,53 @@
+const express = require("express");
+const { Pool, Client } = require("pg");
+const copyFrom = require("pg-copy-streams").from;
+const fs = require("fs");
+
+var connectionString = "postgres://postgres:password@localhost:5432/Q&A";
+
+var client = new Client(connectionString);
+
+client.connect((err, success) => {
+  if (success) {
+    console.log("Connected to postgres db");
+  }
+});
+
+var pool = new Pool();
+
+pool.connect(function (err, c, done) {
+  var stream = client.query(
+    copyFrom(
+      "COPY questions(id, product_id, body, date_written, asker_name, asker_email, reported, helpful) FROM STDIN WITH (FORMAT csv)"
+    )
+  );
+  var fileStream = fs.createReadStream("questions.csv");
+  fileStream.on("error", done);
+  stream.on("error", done);
+  stream.on("finish", done);
+  fileStream.pipe(stream);
+});
+
+pool.connect(function (err, c, done) {
+  var stream = client.query(
+    copyFrom(
+      "COPY answers(id, question_id, body, date_written, answerer_name, answerer_email, reported, helpful) FROM STDIN WITH (FORMAT csv)"
+    )
+  );
+  var fileStream = fs.createReadStream("answers.csv");
+  fileStream.on("error", done);
+  stream.on("error", done);
+  stream.on("finish", done);
+  fileStream.pipe(stream);
+});
+
+pool.connect(function (err, c, done) {
+  var stream = client.query(
+    copyFrom("COPY images(id, answer_id, url) FROM STDIN WITH (FORMAT csv)")
+  );
+  var fileStream = fs.createReadStream("answers_photos.csv");
+  fileStream.on("error", done);
+  stream.on("error", done);
+  stream.on("finish", done);
+  fileStream.pipe(stream);
+});

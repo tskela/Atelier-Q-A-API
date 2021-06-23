@@ -1,0 +1,28 @@
+{
+  "name": "FEC-QA-API-Service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "node": "^16.3.0",
+    "pg": "^8.6.0",
+    "pg-copy-streams": "^5.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tskela/FEC-QA-API-Service.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tskela/FEC-QA-API-Service/issues"
+  },
+  "homepage": "https://github.com/tskela/FEC-QA-API-Service#readme"
+}
