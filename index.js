@@ -1,3 +1,4 @@
+require('newrelic');
 const express = require("express");
 const copyFrom = require("pg-copy-streams").from;
 const fs = require("fs");
@@ -74,7 +75,6 @@ app.get("/qa/questions", (req, res) => {
 
   client.query(queryString, [req.query.product_id], (err, rows) => {
     if (err) {
-      console.log(err.stack);
       res.status(400).end();
     } else {
       var resultObj = cleanJSON(rows.rows[0].array_to_json);
@@ -109,7 +109,6 @@ app.get("/qa/:question_id/answers", (req, res) => {
 
   client.query(queryString, [question_id], (err, rows) => {
     if (err) {
-      console.log(err.stack);
       res.status(400).end();
     } else {
       res.status(200).send(
@@ -133,7 +132,6 @@ app.put("/qa/questions/:question_id/helpful", (req, res) => {
 
   client.query(queryString, [question_id], (err, rows) => {
     if (err) {
-      console.log(err.stack);
       res.status(400).end();
     } else {
       res.status(200).send("marked question helpful!");
@@ -148,7 +146,6 @@ app.put("/qa/questions/:question_id/report", (req, res) => {
 
   client.query(queryString, [question_id], (err, rows) => {
     if (err) {
-      console.log(err.stack);
       res.status(400).end();
     } else {
       res.status(200).send("question reported!");
@@ -163,7 +160,6 @@ app.put("/qa/answers/:answer_id/helpful", (req, res) => {
 
   client.query(queryString, [answer_id], (err, rows) => {
     if (err) {
-      console.log(err.stack);
       res.status(400).end();
     } else {
       res.status(200).send("marked answer helpful!");
@@ -178,7 +174,6 @@ app.put("/qa/answers/:answer_id/report", (req, res) => {
 
   client.query(queryString, [answer_id], (err, rows) => {
     if (err) {
-      console.log(err.stack);
       res.status(400).end();
     } else {
       res.status(200).send("answer reported!");
@@ -203,7 +198,6 @@ app.post("/qa/questions", (req, res) => {
     [product_id, body, name, email, reported, helpfulness],
     (err, rows) => {
       if (err) {
-        console.log(err.stack);
         res.status(400).end();
       } else {
         res.status(201).send("question posted!");
@@ -228,7 +222,6 @@ app.post("/qa/questions/:question_id/answers", (req, res) => {
     [question_id, body, name, email, reported, helpfulness],
     (err, rows) => {
       if (err) {
-        console.log(err.stack);
         res.status(400).end();
       } else {
         client.query(`SELECT MAX(id) FROM answers`, (req, rows) => {
@@ -237,7 +230,6 @@ app.post("/qa/questions/:question_id/answers", (req, res) => {
           var insertImages = `INSERT INTO images (answer_id, url) SELECT ${max}, jsonb_array_elements('${photos}')`;
           client.query(insertImages, (err, result) => {
             if (err) {
-              console.log(err.stack);
               res.status(400).end();
             } else {
               res.status(201).send("answer posted!");

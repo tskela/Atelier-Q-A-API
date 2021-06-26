@@ -1,6 +1,7 @@
 const { Pool, Client } = require("pg");
+const config = require('./config.js');
 
-var connectionString = "postgres://postgres:password@localhost:5432/Q&A";
+var connectionString = `postgres://postgres:${config.PASSWORD}@localhost:5432/Q&A`;
 
 var client = new Client(connectionString);
 
