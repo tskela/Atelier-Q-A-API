@@ -261,10 +261,11 @@ app.post("/qa/questions/:question_id/answers", (req, res) => {
   );
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Example app listening at http://localhost:${port}`);
+// });
 
+module.exports = app;
 /* ===========================ETL CODE===============================*/
 
 //var pool = new Pool();
