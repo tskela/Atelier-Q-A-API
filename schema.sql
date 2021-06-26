@@ -1,7 +1,7 @@
 \c Q&A
 
 CREATE TABLE questions (
-  id SERIAL PRIMARY KEY,
+  question_id SERIAL PRIMARY KEY,
   product_id INT,
   body VARCHAR(300),
   date_written BIGINT,

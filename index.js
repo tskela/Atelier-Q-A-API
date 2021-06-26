@@ -141,7 +141,7 @@ app.get("/qa/:question_id/answers", (req, res) => {
 app.put("/qa/questions/:question_id/helpful", (req, res) => {
   var question_id = req.params.question_id;
 
-  var queryString = `UPDATE questions SET helpful = helpful + 1 WHERE id=$1`;
+  var queryString = `UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id=$1`;
 
   client.query(queryString, [question_id], (err, rows) => {
     if (err) {
@@ -156,7 +156,7 @@ app.put("/qa/questions/:question_id/helpful", (req, res) => {
 app.put("/qa/questions/:question_id/report", (req, res) => {
   var question_id = req.params.question_id;
 
-  var queryString = `UPDATE questions SET reported = true WHERE id=$1`;
+  var queryString = `UPDATE questions SET reported = true WHERE question_id=$1`;
 
   client.query(queryString, [question_id], (err, rows) => {
     if (err) {
@@ -199,6 +199,67 @@ app.put("/qa/answers/:answer_id/report", (req, res) => {
 });
 
 /*=========================POST ROUTES========================*/
+
+app.post("/qa/questions", (req, res) => {
+  var product_id = req.body.product_id;
+  var body = req.body.body;
+  var name = req.body.name;
+  var email = req.body.email;
+  var reported = false;
+  var helpfulness = 0;
+
+  var queryString = `INSERT INTO questions(product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness) VALUES($1, $2, DATE_TRUNC('second', LOCALTIMESTAMP), $3, $4, $5, $6)`;
+
+  client.query(
+    queryString,
+    [product_id, body, name, email, reported, helpfulness],
+    (err, rows) => {
+      if (err) {
+        console.log(err.stack);
+        res.status(400).end();
+      } else {
+        res.status(201).send("question posted!");
+      }
+    }
+  );
+});
+
+app.post("/qa/questions/:question_id/answers", (req, res) => {
+  var question_id = req.params.question_id;
+  var body = req.body.body;
+  var name = req.body.name;
+  var email = req.body.email;
+  var photos = req.body.photos;
+  var reported = false;
+  var helpfulness = 0;
+
+  var queryString = `INSERT INTO answers(question_id, body, date_written, answerer_name, answerer_email, reported, helpful) VALUES($1, $2, DATE_TRUNC('second', LOCALTIMESTAMP), $3, $4, $5, $6)`;
+
+  client.query(
+    queryString,
+    [question_id, body, name, email, reported, helpfulness],
+    (err, rows) => {
+      if (err) {
+        console.log(err.stack);
+        res.status(400).end();
+      } else {
+        client.query(`SELECT MAX(id) FROM answers`, (req, rows) => {
+          var max = rows.rows[0].max;
+          photos = JSON.stringify(photos);
+          var insertImages = `INSERT INTO images (answer_id, url) SELECT ${max}, jsonb_array_elements('${photos}')`;
+          client.query(insertImages, (err, result) => {
+            if (err) {
+              console.log(err.stack);
+              res.status(400).end();
+            } else {
+              res.status(201).send("answer posted!");
+            }
+          });
+        });
+      }
+    }
+  );
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
