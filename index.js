@@ -93,7 +93,7 @@ app.get("/qa/questions", (req, res) => {
       res.status(200).send(
         JSON.stringify({
           product_id: req.query.product_id,
-          results: resultObj,
+          results: resultObj.slice(offset * limit).slice(0, limit),
         })
       );
     }
@@ -129,7 +129,7 @@ app.get("/qa/:question_id/answers", (req, res) => {
           question: question_id,
           page: offset,
           count: limit,
-          results: rows.rows[0].json_agg,
+          results: rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
         })
       );
     }
