@@ -1,7 +1,7 @@
 const express = require("express");
-const { Pool, Client } = require("pg");
 const copyFrom = require("pg-copy-streams").from;
 const fs = require("fs");
+const client = require("./db.js")
 
 const app = express();
 const port = 8080;
@@ -10,18 +10,6 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello");
-});
-
-var connectionString = "postgres://postgres:password@localhost:5432/Q&A";
-
-var client = new Client(connectionString);
-
-client.connect((err, success) => {
-  if (success) {
-    console.log("Connected to postgres db");
-  } else {
-    console.log(err);
-  }
 });
 
 var cleanJSON = function (arr) {
@@ -266,6 +254,8 @@ app.post("/qa/questions/:question_id/answers", (req, res) => {
 // });
 
 module.exports = app;
+
+
 /* ===========================ETL CODE===============================*/
 
 //var pool = new Pool();
