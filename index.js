@@ -14,6 +14,10 @@ app.get("/", (req, res) => {
   res.send("Hello");
 });
 
+app.get("/loaderio-af04efb0d83370729fa4a4b8d9a2a10b.txt", (req, res) => {
+  res.send("loaderio-af04efb0d83370729fa4a4b8d9a2a10b");
+})
+
 var cleanJSON = function (arr) {
   for (var i = 0; i < arr.length; i++) {
     var question = arr[i];
