@@ -3,26 +3,26 @@
 CREATE TABLE questions (
   question_id SERIAL PRIMARY KEY,
   product_id INT,
-  body VARCHAR(300),
-  date_written BIGINT,
+  question_body VARCHAR(300),
+  question_date BIGINT,
   asker_name VARCHAR(100),
   asker_email VARCHAR(100),
   reported BOOLEAN,
-  helpful INT
+  question_helpfulness INT
 );
 
 CREATE TABLE answers (
   id SERIAL PRIMARY KEY,
   question_id INT,
   body VARCHAR(300),
-  date_written BIGINT,
+  date BIGINT,
   answerer_name VARCHAR(100),
   answerer_email VARCHAR(100),
   reported BOOLEAN,
   helpful INT,
   CONSTRAINT question_id
     FOREIGN KEY(question_id)
-      REFERENCES questions(id)
+      REFERENCES questions(question_id)
 );
 
 CREATE TABLE images (
@@ -36,10 +36,6 @@ CREATE TABLE images (
 
 CREATE INDEX ON questions(product_id);
 
-CREATE INDEX ON questions(id);
-
 CREATE INDEX ON answers(question_id);
-
-CREATE INDEX ON answers(id)
 
 CREATE INDEX ON images(answer_id);

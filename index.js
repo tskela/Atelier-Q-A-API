@@ -2,10 +2,11 @@ require('newrelic');
 const express = require("express");
 const copyFrom = require("pg-copy-streams").from;
 const fs = require("fs");
+const { Pool, Client } = require("pg");
 const client = require("./db.js")
 
 const app = express();
-const port = 8080;
+const port = 3000;
 
 app.use(express.json());
 
@@ -26,7 +27,7 @@ var cleanJSON = function (arr) {
         var answer = {};
         answer["id"] = answerRecord.id;
         answer["body"] = answerRecord.body;
-        answer["date_written"] = answerRecord.date_written;
+        answer["date"] = answerRecord.date;
         answer["answerer_name"] = answerRecord.answerer_name;
         answer["helpful"] = answerRecord.helpful;
         answer["photos"] =
@@ -55,7 +56,7 @@ app.get("/qa/questions", (req, res) => {
                  (SELECT Array_to_json(Array_agg(Row_to_json(d)))
                   FROM   (SELECT answers.id,
                                  answers.body,
-                                 answers.date_written,
+                                 answers.date,
                                  answers.answerer_name,
                                  answers.helpful,
                                  (SELECT Array_to_json(Array_agg(Row_to_json(i)))
@@ -97,7 +98,7 @@ app.get("/qa/:question_id/answers", (req, res) => {
   FROM   (
                    SELECT    answers.id,
                              answers.body,
-                             answers.date_written,
+                             answers.date,
                              answers.answerer_name,
                              answers.helpful,
                              COALESCE(Json_agg(images) filter (WHERE images.answer_id IS NOT NULL), '[]') AS photos
@@ -109,6 +110,7 @@ app.get("/qa/:question_id/answers", (req, res) => {
 
   client.query(queryString, [question_id], (err, rows) => {
     if (err) {
+      console.log(err);
       res.status(400).end();
     } else {
       res.status(200).send(
@@ -215,7 +217,7 @@ app.post("/qa/questions/:question_id/answers", (req, res) => {
   var reported = false;
   var helpfulness = 0;
 
-  var queryString = `INSERT INTO answers(question_id, body, date_written, answerer_name, answerer_email, reported, helpful) VALUES($1, $2, DATE_TRUNC('second', LOCALTIMESTAMP), $3, $4, $5, $6)`;
+  var queryString = `INSERT INTO answers(question_id, body, date, answerer_name, answerer_email, reported, helpful) VALUES($1, $2, DATE_TRUNC('second', LOCALTIMESTAMP), $3, $4, $5, $6)`;
 
   client.query(
     queryString,
@@ -250,14 +252,15 @@ module.exports = app;
 
 /* ===========================ETL CODE===============================*/
 
-//var pool = new Pool();
+var pool = new Pool();
 
 // pool.connect(function (err, c, done) {
 //   var stream = client.query(
 //     copyFrom(
-//       "COPY questions(id, product_id, body, date_written, asker_name, asker_email, reported, helpful) FROM STDIN WITH (FORMAT csv)"
+//       "COPY questions(question_id, product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness) FROM STDIN WITH (FORMAT csv)"
 //     )
 //   );
+//   console.log('hello')
 //   var fileStream = fs.createReadStream("questions.csv");
 //   fileStream.on("error", done);
 //   stream.on("error", done);
@@ -268,7 +271,7 @@ module.exports = app;
 // pool.connect(function (err, c, done) {
 //   var stream = client.query(
 //     copyFrom(
-//       "COPY answers(id, question_id, body, date_written, answerer_name, answerer_email, reported, helpful) FROM STDIN WITH (FORMAT csv)"
+//       "COPY answers(id, question_id, body, date, answerer_name, answerer_email, reported, helpful) FROM STDIN WITH (FORMAT csv)"
 //     )
 //   );
 //   var fileStream = fs.createReadStream("answers.csv");
@@ -289,6 +292,6 @@ module.exports = app;
 //   fileStream.pipe(stream);
 // });
 
-//client.query('ALTER TABLE questions ALTER COLUMN date_written TYPE timestamp without time zone USING TO_TIMESTAMP(date_written / 1000)')
+// client.query('ALTER TABLE questions ALTER COLUMN question_date TYPE timestamp without time zone USING TO_TIMESTAMP(question_date / 1000)');
 
-//client.query('ALTER TABLE answers ALTER COLUMN date_written TYPE timestamp without time zone USING TO_TIMESTAMP(date_written / 1000)')
+// client.query('ALTER TABLE answers ALTER COLUMN date TYPE timestamp without time zone USING TO_TIMESTAMP(date / 1000)')
