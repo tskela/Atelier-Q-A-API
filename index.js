@@ -125,7 +125,7 @@ app.get("/qa/:question_id/answers", (req, res) => {
           question: question_id,
           page: offset,
           count: limit,
-          results: rows.rowa[0].json_agg === null ? [] : rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
+          results: rows.rows[0].json_agg === null ? [] : rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
         })
       );
     }
