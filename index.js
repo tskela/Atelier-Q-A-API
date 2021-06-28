@@ -19,6 +19,9 @@ app.get("/loaderio-af04efb0d83370729fa4a4b8d9a2a10b.txt", (req, res) => {
 })
 
 var cleanJSON = function (arr) {
+  if (arr === null) {
+    return []
+  }
   for (var i = 0; i < arr.length; i++) {
     var question = arr[i];
     if (question.answers === null) {
