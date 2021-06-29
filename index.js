@@ -1,9 +1,9 @@
-require('newrelic');
+require("newrelic");
 const express = require("express");
 const copyFrom = require("pg-copy-streams").from;
 const fs = require("fs");
 const { Pool, Client } = require("pg");
-const client = require("./db.js")
+const client = require("./db.js");
 
 const app = express();
 const port = 3000;
@@ -16,11 +16,11 @@ app.get("/", (req, res) => {
 
 app.get("/loaderio-af04efb0d83370729fa4a4b8d9a2a10b.txt", (req, res) => {
   res.send("loaderio-af04efb0d83370729fa4a4b8d9a2a10b");
-})
+});
 
 var cleanJSON = function (arr) {
   if (arr === null) {
-    return []
+    return [];
   }
   for (var i = 0; i < arr.length; i++) {
     var question = arr[i];
@@ -125,7 +125,10 @@ app.get("/qa/:question_id/answers", (req, res) => {
           question: question_id,
           page: offset,
           count: limit,
-          results: rows.rows[0].json_agg === null ? [] : rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
+          results:
+            rows.rows[0].json_agg === null
+              ? []
+              : rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
         })
       );
     }
@@ -137,13 +140,13 @@ app.get("/qa/:question_id/answers", (req, res) => {
 app.put("/qa/questions/:question_id/helpful", (req, res) => {
   var question_id = req.params.question_id;
 
-  var queryString = `UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id=$1`;
+  var queryString = `UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id=${question_id}`;
 
-  client.query(queryString, [question_id], (err, rows) => {
+  client.query(queryString, (err, rows) => {
     if (err) {
       res.status(400).end();
     } else {
-      res.status(200).send("marked question helpful!");
+      res.status(200).end();
     }
   });
 });
@@ -157,7 +160,7 @@ app.put("/qa/questions/:question_id/report", (req, res) => {
     if (err) {
       res.status(400).end();
     } else {
-      res.status(200).send("question reported!");
+      res.status(200).end();
     }
   });
 });
@@ -233,18 +236,22 @@ app.post("/qa/questions/:question_id/answers", (req, res) => {
       if (err) {
         res.status(400).end();
       } else {
-        client.query(`SELECT MAX(id) FROM answers`, (req, rows) => {
-          var max = rows.rows[0].max;
-          photos = JSON.stringify(photos);
-          var insertImages = `INSERT INTO images (answer_id, url) SELECT ${max}, jsonb_array_elements('${photos}')`;
-          client.query(insertImages, (err, result) => {
-            if (err) {
-              res.status(400).end();
-            } else {
-              res.status(201).send("answer posted!");
-            }
+        if (photos.length === 0) {
+          res.status(201).send("answer posted!");
+        } else {
+          client.query(`SELECT MAX(id) FROM answers`, (req, rows) => {
+            var max = rows.rows[0].max;
+            photos = JSON.stringify(photos);
+            var insertImages = `INSERT INTO images (answer_id, url) SELECT ${max}, jsonb_array_elements('${photos}')`;
+            client.query(insertImages, (err, result) => {
+              if (err) {
+                res.status(400).end();
+              } else {
+                res.status(201).send("answer posted!");
+              }
+            });
           });
-        });
+        }
       }
     }
   );
@@ -255,7 +262,6 @@ app.post("/qa/questions/:question_id/answers", (req, res) => {
 // });
 
 module.exports = app;
-
 
 /* ===========================ETL CODE===============================*/
 
