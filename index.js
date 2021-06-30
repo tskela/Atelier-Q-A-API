@@ -81,17 +81,24 @@ app.get("/qa/questions", (req, res) => {
           WHERE  questions.product_id = $1
                  AND questions.reported = false) t`;
 
-  client.query(queryString, [req.query.product_id], (err, rows) => {
+  pool.connect((err, client, release) => {
     if (err) {
-      res.status(400).end();
+      console.log("Error acquiring client");
     } else {
-      var resultObj = cleanJSON(rows.rows[0].array_to_json);
-      res.status(200).send(
-        JSON.stringify({
-          product_id: req.query.product_id,
-          results: resultObj.slice(offset * limit).slice(0, limit),
-        })
-      );
+      client.query(queryString, [req.query.product_id], (err, rows) => {
+        release();
+        if (err) {
+          res.status(400).end();
+        } else {
+          var resultObj = cleanJSON(rows.rows[0].array_to_json);
+          res.status(200).send(
+            JSON.stringify({
+              product_id: req.query.product_id,
+              results: resultObj.slice(offset * limit).slice(0, limit),
+            })
+          );
+        }
+      });
     }
   });
 });
