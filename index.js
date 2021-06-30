@@ -18,8 +18,8 @@ app.get("/loaderio-af04efb0d83370729fa4a4b8d9a2a10b.txt", (req, res) => {
   res.send("loaderio-af04efb0d83370729fa4a4b8d9a2a10b");
 });
 
-app.put("/testquery", (req, res) => {
-  client.query('UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id=34', (err, rows) => {
+app.get("/testquery", (req, res) => {
+  client.query('SELECT * FROM test where id = 1', (err, rows) => {
     res.status(200).send()
   })
 })
