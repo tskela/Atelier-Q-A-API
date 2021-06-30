@@ -154,6 +154,7 @@ app.put("/qa/questions/:question_id/helpful", (req, res) => {
       console.log("Error acquiring client");
     } else {
       client.query(queryString, [question_id], (err, rows) => {
+        release();
         if (err) {
           res.status(400).end();
         } else {
@@ -174,6 +175,7 @@ app.put("/qa/questions/:question_id/report", (req, res) => {
       console.log("Error acquiring client");
     } else {
       client.query(queryString, [question_id], (err, rows) => {
+        release();
         if (err) {
           res.status(400).end();
         } else {
@@ -194,6 +196,7 @@ app.put("/qa/answers/:answer_id/helpful", (req, res) => {
       console.log("Error acquiring client");
     } else {
       client.query(queryString, [answer_id], (err, rows) => {
+        release();
         if (err) {
           res.status(400).end();
         } else {
@@ -214,6 +217,7 @@ app.put("/qa/answers/:answer_id/report", (req, res) => {
       console.log("Error acquiring client");
     } else {
       client.query(queryString, [answer_id], (err, rows) => {
+        release();
         if (err) {
           res.status(400).end();
         } else {
