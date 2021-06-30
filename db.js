@@ -3,14 +3,16 @@ const config = require('./config.js');
 
 var connectionString = `postgresql://postgres:${config.PASSWORD}@ec2-52-53-128-252.us-west-1.compute.amazonaws.com/Q&A`;
 
-var client = new Client(connectionString);
+const pool = new Pool(connectionString);
 
-client.connect((err, success) => {
-  if (success) {
-    console.log("Connected to postgres db");
-  } else {
-    console.log(err);
-  }
-});
+// var client = new Pool(connectionString);
 
-module.exports = client;
+// client.connect((err, success) => {
+//   if (success) {
+//     console.log("Connected to postgres db");
+//   } else {
+//     console.log(err);
+//   }
+// });
+
+module.exports = pool;

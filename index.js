@@ -3,7 +3,7 @@ const express = require("express");
 const copyFrom = require("pg-copy-streams").from;
 const fs = require("fs");
 const { Pool, Client } = require("pg");
-const client = require("./db.js");
+const pool = require("./db.js");
 
 const app = express();
 const port = 3000;
@@ -17,12 +17,6 @@ app.get("/", (req, res) => {
 app.get("/loaderio-af04efb0d83370729fa4a4b8d9a2a10b.txt", (req, res) => {
   res.send("loaderio-af04efb0d83370729fa4a4b8d9a2a10b");
 });
-
-app.get("/testquery", (req, res) => {
-  client.query('SELECT * FROM test where id = 1', (err, rows) => {
-    res.status(200).send()
-  })
-})
 
 var cleanJSON = function (arr) {
   if (arr === null) {
@@ -121,22 +115,29 @@ app.get("/qa/:question_id/answers", (req, res) => {
                    WHERE     answers.question_id = $1
                    GROUP BY  answers.id) answers`;
 
-  client.query(queryString, [question_id], (err, rows) => {
+  pool.connect((err, client, release) => {
     if (err) {
-      console.log(err);
-      res.status(400).end();
+      console.log("Error acquiring client");
     } else {
-      res.status(200).send(
-        JSON.stringify({
-          question: question_id,
-          page: offset,
-          count: limit,
-          results:
-            rows.rows[0].json_agg === null
-              ? []
-              : rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
-        })
-      );
+      client.query(queryString, [question_id], (err, rows) => {
+        release();
+        if (err) {
+          console.log(err);
+          res.status(400).end();
+        } else {
+          res.status(200).send(
+            JSON.stringify({
+              question: question_id,
+              page: offset,
+              count: limit,
+              results:
+                rows.rows[0].json_agg === null
+                  ? []
+                  : rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
+            })
+          );
+        }
+      });
     }
   });
 });
@@ -271,7 +272,7 @@ module.exports = app;
 
 /* ===========================ETL CODE===============================*/
 
-var pool = new Pool();
+// var pool = new Pool();
 
 // pool.connect(function (err, c, done) {
 //   var stream = client.query(
