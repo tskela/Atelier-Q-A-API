@@ -147,13 +147,19 @@ app.get("/qa/:question_id/answers", (req, res) => {
 app.put("/qa/questions/:question_id/helpful", (req, res) => {
   var question_id = req.params.question_id;
 
-  var queryString = `UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id=${question_id}`;
+  var queryString = `UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id=$1`;
 
-  client.query(queryString, (err, rows) => {
+  pool.connect((err, client, release) => {
     if (err) {
-      res.status(400).end();
+      console.log("Error acquiring client");
     } else {
-      res.status(200).end();
+      client.query(queryString, [question_id], (err, rows) => {
+        if (err) {
+          res.status(400).end();
+        } else {
+          res.status(200).end();
+        }
+      });
     }
   });
 });
@@ -163,11 +169,17 @@ app.put("/qa/questions/:question_id/report", (req, res) => {
 
   var queryString = `UPDATE questions SET reported = true WHERE question_id=$1`;
 
-  client.query(queryString, [question_id], (err, rows) => {
+  pool.connect((err, client, release) => {
     if (err) {
-      res.status(400).end();
+      console.log("Error acquiring client");
     } else {
-      res.status(200).end();
+      client.query(queryString, [question_id], (err, rows) => {
+        if (err) {
+          res.status(400).end();
+        } else {
+          res.status(200).end();
+        }
+      });
     }
   });
 });
@@ -177,11 +189,17 @@ app.put("/qa/answers/:answer_id/helpful", (req, res) => {
 
   var queryString = `UPDATE answers SET helpful = helpful + 1 WHERE id=$1`;
 
-  client.query(queryString, [answer_id], (err, rows) => {
+  pool.connect((err, client, release) => {
     if (err) {
-      res.status(400).end();
+      console.log("Error acquiring client");
     } else {
-      res.status(200).send("marked answer helpful!");
+      client.query(queryString, [answer_id], (err, rows) => {
+        if (err) {
+          res.status(400).end();
+        } else {
+          res.status(200).end();
+        }
+      });
     }
   });
 });
@@ -191,11 +209,17 @@ app.put("/qa/answers/:answer_id/report", (req, res) => {
 
   var queryString = `UPDATE answers SET reported = true WHERE id=$1`;
 
-  client.query(queryString, [answer_id], (err, rows) => {
+  pool.connect((err, client, release) => {
     if (err) {
-      res.status(400).end();
+      console.log("Error acquiring client");
     } else {
-      res.status(200).send("answer reported!");
+      client.query(queryString, [answer_id], (err, rows) => {
+        if (err) {
+          res.status(400).end();
+        } else {
+          res.status(200).end();
+        }
+      });
     }
   });
 });
