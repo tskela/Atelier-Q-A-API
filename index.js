@@ -132,17 +132,15 @@ app.get("/qa/:question_id/answers", (req, res) => {
           console.log(err);
           res.status(400).end();
         } else {
-          res.status(200).send(
-            JSON.stringify({
-              question: question_id,
-              page: offset,
-              count: limit,
-              results:
-                rows.rows[0].json_agg === null
-                  ? []
-                  : rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
-            })
-          );
+          res.status(200).send({
+            question: question_id,
+            page: offset,
+            count: limit,
+            results:
+              rows.rows[0].json_agg === null
+                ? []
+                : rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
+          });
         }
       });
     }
