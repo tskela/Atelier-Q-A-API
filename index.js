@@ -1,4 +1,4 @@
-require("newrelic");
+// require("newrelic");
 const express = require("express");
 const copyFrom = require("pg-copy-streams").from;
 const fs = require("fs");
@@ -14,8 +14,8 @@ app.get("/", (req, res) => {
   res.send("Hello");
 });
 
-app.get("/loaderio-af04efb0d83370729fa4a4b8d9a2a10b.txt", (req, res) => {
-  res.send("loaderio-af04efb0d83370729fa4a4b8d9a2a10b");
+app.get("/loaderio-ffff07ae18876b28d1c22bb51a17aebe.txt", (req, res) => {
+  res.send("loaderio-ffff07ae18876b28d1c22bb51a17aebe");
 });
 
 var cleanJSON = function (arr) {
