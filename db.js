@@ -7,7 +7,7 @@ const pool = new Pool({
   host: 'ec2-52-53-128-252.us-west-1.compute.amazonaws.com',
   user: 'postgres',
   database: 'Q&A',
-  max: 20,
+  max: 30,
   password: `${config.PASSWORD}`
 });
 
