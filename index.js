@@ -14,8 +14,8 @@ app.get("/", (req, res) => {
   res.send("Hello");
 });
 
-app.get("/loaderio-ffff07ae18876b28d1c22bb51a17aebe.txt", (req, res) => {
-  res.send("loaderio-ffff07ae18876b28d1c22bb51a17aebe");
+app.get("/loaderio-0e28049c9eea2453a8294df25831f932.txt", (req, res) => {
+  res.send("loaderio-0e28049c9eea2453a8294df25831f932");
 });
 
 var cleanJSON = function (arr) {
