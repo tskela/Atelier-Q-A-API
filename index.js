@@ -1,4 +1,4 @@
-// require("newrelic");
+require("newrelic");
 const express = require("express");
 const copyFrom = require("pg-copy-streams").from;
 const fs = require("fs");
