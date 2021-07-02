@@ -139,7 +139,8 @@ app.get("/qa/:question_id/answers", (req, res) => {
             results:
               rows.rows[0].json_agg === null
                 ? []
-                : rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
+                : rows.rows[0].json_agg
+                // .slice(offset * limit).slice(0, limit),
           });
         }
       });
