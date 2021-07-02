@@ -108,6 +108,8 @@ app.get("/qa/questions", (req, res) => {
 });
 
 app.get("/qa/:question_id/answers", (req, res) => {
+  console.log(reqs);
+  reqs++;
   var limit = req.query.count || 5;
   var offset = req.query.page - 1 || 0;
   var question_id = req.params.question_id;
