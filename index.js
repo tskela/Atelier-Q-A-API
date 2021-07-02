@@ -18,8 +18,6 @@ app.get("/loaderio-0e28049c9eea2453a8294df25831f932.txt", (req, res) => {
   res.send("loaderio-0e28049c9eea2453a8294df25831f932");
 });
 
-var reqs = 0;
-
 var cleanJSON = function (arr) {
   if (arr === null) {
     return [];
@@ -108,8 +106,6 @@ app.get("/qa/questions", (req, res) => {
 });
 
 app.get("/qa/:question_id/answers", (req, res) => {
-  console.log(reqs);
-  reqs++;
   var limit = req.query.count || 5;
   var offset = req.query.page - 1 || 0;
   var question_id = req.params.question_id;
