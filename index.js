@@ -50,8 +50,6 @@ var cleanJSON = function (arr) {
 /*=========================GET ROUTES========================*/
 
 app.get("/qa/questions", (req, res) => {
-  console.log(reqs);
-  reqs++;
   var limit = req.query.count || 5;
   var offset = req.query.page - 1 || 0;
 
