@@ -33,9 +33,3 @@ CREATE TABLE images (
     FOREIGN KEY(answer_id)
       REFERENCES answers(id)
 );
-
-CREATE INDEX ON questions(product_id);
-
-CREATE INDEX ON answers(question_id);
-
-CREATE INDEX ON images(answer_id);
