@@ -27,3 +27,12 @@ Sample queries and API response objects can be found in this GitHub Gist: [Datab
 The API endpoints I implemented serve the frontend widget below. 
 
 ![Frontend](FrontEnd.png)
+
+## Usage
+
+```
+npm install
+npm start
+```
+
+You will need to install PostgreSQL and change the connection string in the database file to refer to your Postgres database.
