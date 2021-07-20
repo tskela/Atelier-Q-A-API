@@ -18,3 +18,6 @@ For this project, my team was tasked with replacing the API for an e-commerce cl
 * New Relic
 * Nginx
 
+## Database Queries
+
+Sample queries and API response objects can be found in this GitHub Gist: ![Database Queries](https://gist.github.com/tskela/0f082423acd4a02ca12a1dc6328f84a1).
