@@ -26,4 +26,4 @@ Sample queries and API response objects can be found in this GitHub Gist: [Datab
 
 The API endpoints I implemented serve the frontend widget below. 
 
-![Frontend](#FrontEnd.png)
+![Frontend](FrontEnd.png)
