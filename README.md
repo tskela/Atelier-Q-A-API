@@ -35,4 +35,4 @@ npm install
 npm start
 ```
 
-You will need to install PostgreSQL and change the connection string in the database file to refer to your Postgres database.
+You will need to install PostgreSQL, change the connection string in the database file to refer to your Postgres database and run the ETL code to seed your database.
