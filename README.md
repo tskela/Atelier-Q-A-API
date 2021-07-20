@@ -21,3 +21,9 @@ For this project, my team was tasked with replacing the API for an e-commerce cl
 ## Database Queries
 
 Sample queries and API response objects can be found in this GitHub Gist: [Database Queries](https://gist.github.com/tskela/0f082423acd4a02ca12a1dc6328f84a1).
+
+## Screenshot of Frontend
+
+The API endpoints I implemented serve the frontend widget below. 
+
+![Frontend](#FrontEnd.png)
