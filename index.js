@@ -271,46 +271,45 @@ module.exports = app;
 
 /* ===========================ETL CODE===============================*/
 
-// var pool = new Pool();
+var pool = new Pool();
 
-// pool.connect(function (err, c, done) {
-//   var stream = client.query(
-//     copyFrom(
-//       "COPY questions(question_id, product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness) FROM STDIN WITH (FORMAT csv)"
-//     )
-//   );
-//   console.log('hello')
-//   var fileStream = fs.createReadStream("questions.csv");
-//   fileStream.on("error", done);
-//   stream.on("error", done);
-//   stream.on("finish", done);
-//   fileStream.pipe(stream);
-// });
+pool.connect(function (err, c, done) {
+  var stream = client.query(
+    copyFrom(
+      "COPY questions(question_id, product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness) FROM STDIN WITH (FORMAT csv)"
+    )
+  );
+  var fileStream = fs.createReadStream("questions.csv");
+  fileStream.on("error", done);
+  stream.on("error", done);
+  stream.on("finish", done);
+  fileStream.pipe(stream);
+});
 
-// pool.connect(function (err, c, done) {
-//   var stream = client.query(
-//     copyFrom(
-//       "COPY answers(id, question_id, body, date, answerer_name, answerer_email, reported, helpful) FROM STDIN WITH (FORMAT csv)"
-//     )
-//   );
-//   var fileStream = fs.createReadStream("answers.csv");
-//   fileStream.on("error", done);
-//   stream.on("error", done);
-//   stream.on("finish", done);
-//   fileStream.pipe(stream);
-// });
+pool.connect(function (err, c, done) {
+  var stream = client.query(
+    copyFrom(
+      "COPY answers(id, question_id, body, date, answerer_name, answerer_email, reported, helpful) FROM STDIN WITH (FORMAT csv)"
+    )
+  );
+  var fileStream = fs.createReadStream("answers.csv");
+  fileStream.on("error", done);
+  stream.on("error", done);
+  stream.on("finish", done);
+  fileStream.pipe(stream);
+});
 
-// pool.connect(function (err, c, done) {
-//   var stream = client.query(
-//     copyFrom("COPY images(id, answer_id, url) FROM STDIN WITH (FORMAT csv)")
-//   );
-//   var fileStream = fs.createReadStream("answers_photos.csv");
-//   fileStream.on("error", done);
-//   stream.on("error", done);
-//   stream.on("finish", done);
-//   fileStream.pipe(stream);
-// });
+pool.connect(function (err, c, done) {
+  var stream = client.query(
+    copyFrom("COPY images(id, answer_id, url) FROM STDIN WITH (FORMAT csv)")
+  );
+  var fileStream = fs.createReadStream("answers_photos.csv");
+  fileStream.on("error", done);
+  stream.on("error", done);
+  stream.on("finish", done);
+  fileStream.pipe(stream);
+});
 
-// client.query('ALTER TABLE questions ALTER COLUMN question_date TYPE timestamp without time zone USING TO_TIMESTAMP(question_date / 1000)');
+client.query('ALTER TABLE questions ALTER COLUMN question_date TYPE timestamp without time zone USING TO_TIMESTAMP(question_date / 1000)');
 
-// client.query('ALTER TABLE answers ALTER COLUMN date TYPE timestamp without time zone USING TO_TIMESTAMP(date / 1000)')
+client.query('ALTER TABLE answers ALTER COLUMN date TYPE timestamp without time zone USING TO_TIMESTAMP(date / 1000)')
