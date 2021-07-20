@@ -11,14 +11,4 @@ const pool = new Pool({
   password: `${config.PASSWORD}`
 });
 
-// var client = new Pool(connectionString);
-
-// client.connect((err, success) => {
-//   if (success) {
-//     console.log("Connected to postgres db");
-//   } else {
-//     console.log(err);
-//   }
-// });
-
 module.exports = pool;

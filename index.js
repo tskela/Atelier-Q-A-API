@@ -11,41 +11,12 @@ const port = 3000;
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello");
+  res.send("Q&A Microservice");
 });
 
 app.get("/loaderio-0e28049c9eea2453a8294df25831f932.txt", (req, res) => {
   res.send("loaderio-0e28049c9eea2453a8294df25831f932");
 });
-
-var cleanJSON = function (arr) {
-  if (arr === null) {
-    return [];
-  }
-  for (var i = 0; i < arr.length; i++) {
-    var question = arr[i];
-    if (question.answers === null) {
-      delete question.answers;
-    } else {
-      var answers = {};
-      var answersArray = question.answers.slice();
-      for (var j = 0; j < answersArray.length; j++) {
-        var answerRecord = answersArray[j];
-        var answer = {};
-        answer["id"] = answerRecord.id;
-        answer["body"] = answerRecord.body;
-        answer["date"] = answerRecord.date;
-        answer["answerer_name"] = answerRecord.answerer_name;
-        answer["helpful"] = answerRecord.helpful;
-        answer["photos"] =
-          answerRecord.photos === null ? [] : answerRecord.photos;
-        answers[`${answerRecord.id}`] = answer;
-        question.answers = answers;
-      }
-    }
-  }
-  return arr;
-};
 
 /*=========================GET ROUTES========================*/
 
@@ -90,11 +61,10 @@ app.get("/qa/questions", (req, res) => {
         if (err) {
           res.status(400).end();
         } else {
-          var resultObj = cleanJSON(rows.rows[0].array_to_json);
           res.status(200).send(
             JSON.stringify({
               product_id: req.query.product_id,
-              results: resultObj.slice(offset * limit).slice(0, limit),
+              results: rows.rows[0].array_to_json,
             })
           );
         }
@@ -139,8 +109,7 @@ app.get("/qa/:question_id/answers", (req, res) => {
             results:
               rows.rows[0].json_agg === null
                 ? []
-                : rows.rows[0].json_agg
-                // .slice(offset * limit).slice(0, limit),
+                : rows.rows[0].json_agg.slice(offset * limit).slice(0, limit),
           });
         }
       });
@@ -297,10 +266,6 @@ app.post("/qa/questions/:question_id/answers", (req, res) => {
     }
   );
 });
-
-// app.listen(port, () => {
-//   console.log(`Example app listening at http://localhost:${port}`);
-// });
 
 module.exports = app;
 
