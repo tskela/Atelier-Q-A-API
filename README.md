@@ -28,6 +28,12 @@ The API endpoints I implemented serve the frontend widget below.
 
 ![Frontend](FrontEnd.png)
 
+## Requirements
+
+* Node 16.3.0
+* npm
+* PostgreSQL
+
 ## Usage
 
 ```
